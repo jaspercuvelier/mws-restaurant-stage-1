@@ -1,14 +1,10 @@
 
-header {width:100%; height:200px; order: 1;}
-main { width:100%;order:10;}
-footer{width:100%; order: 20;}
 
 
-@media screen and (max-width:500px)
+/* IF screen width is 500px */
+@media screen and (min-width:500px)
 	{
-		header {width:100%; order:0;}
-		main { width: 40%; order:1;}
-		footer { width:40%; order: 2; }
+		#restaurants-list li{width:30%;}
 
 
 
@@ -18,14 +14,6 @@ footer{width:100%; order: 20;}
 
 @media screen and (min-width:600px)
 	{
-		body{
-			margin: 0 auto;
-			width:400px;
-			}
-
-		header {width:100%; order:0;}
-		main { width: 80%; order:1;}
-		footer { width:80%; order: 2; }
 
 
 
