@@ -155,17 +155,19 @@ nav h1 a {
   margin: 0;
   padding: 30px 15px 60px;
   text-align: center;
+  
+ /* width:100%; DEZE MOET ELDERS (CONTAINER ELEMENT!!) */
 }
 #restaurants-list li {
-  /*display:inline;*/
+  
   background-color: #fff;
   border: 2px solid #ccc;
   font-family: Arial,sans-serif;
   margin: 0 auto;
-  min-height: 380px;
+ min-height: 380px;
   padding: 0 30px 25px;
   text-align: left;
-  width: 80%;
+  width: 30%; 
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;
