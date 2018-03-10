@@ -155,7 +155,10 @@ nav h1 a {
   margin: 0;
   padding: 30px 15px 60px;
   text-align: center;
-  
+  /*PROBEERSEL: HIERVAN FLEX CONTAINER VAN MAKEN*/
+  display:flex;
+  flex-wrap: wrap;
+
  /* width:100%; DEZE MOET ELDERS (CONTAINER ELEMENT!!) */
 }
 #restaurants-list li {
@@ -167,7 +170,7 @@ nav h1 a {
  min-height: 380px;
   padding: 0 30px 25px;
   text-align: left;
-  width: 30%; 
+  width: 90%; 
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;
