@@ -4,22 +4,38 @@
 /* IF screen width is 500px */
 @media screen and (min-width:500px)
 	{
-		#restaurants-list li{width:30%;}
+		#restaurants-list li{
+			width:35%; /*GOED VOOR 2 CARDS NAAST ELKAAR */
 
-
-
+		/*padding: 10px 20px 25px;*/
+			}
 	}
 	
+@media screen and (min-width:700px)
+	{
+		#restaurants-list li{
+			/*width:25%;*/
+		/*	padding: 10px 10px 25px;*/
 
-
-@media screen and (min-width:600px)
+	}
+@media screen and (min-width:800px)
 	{
 
-
+		#restaurants-list li{
+			width:25%;
+			/*padding: 10px 20px 25px;*/
+		}
 
 	}
 
 
+
+@media screen and (min-width:1200px)
+	{
+
+		#restaurants-list li{width:15%;}
+
+	}
 
 @media screen and (min-width:1px){
 
