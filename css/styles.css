@@ -61,6 +61,8 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   padding: 25px;
   text-align: center;
   text-transform: uppercase;
+  width:100%;
+  order:100;
 }
 /* ====================== Navigation ====================== */
 nav {
@@ -76,24 +78,25 @@ nav h1 {
 }
 nav h1 a {
   color: #fff;
-  font-size: 14pt;
+  font-size: 1.5em;
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
 
 }
 #breadcrumb {
-    padding: 10px 40px 16px;
+  /*  padding: 10px 40px 16px;*/
     list-style: none;
     background-color: #eee;
     font-size: 17px;
     margin: 0;
-    width: calc(50% - 80px);
+    
 }
 
 /* Display list items side by side */
 #breadcrumb li {
     display: inline;
+    width:100%;
 }
 
 /* Add a slash symbol (/) before/behind each list item */
@@ -210,13 +213,13 @@ justify-content: center;
 }
 #restaurants-list li a {
   background-color: orange;
-  border-bottom: 3px solid #eee;
   color: #fff;
   display: inline-block;
   font-size: 10pt;
   margin: 15px 0 0;
   padding: 8px 30px 10px;
-  text-align: center;
+  text-align: center;  border-bottom: 3px solid #eee;
+
   text-decoration: none;
   text-transform: uppercase;
   justify-content: center;
@@ -224,30 +227,67 @@ justify-content: center;
 }
 
 /* ====================== Restaurant Details ====================== */
-.inside header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
+.inside {
+
+  display:flex;
+  flex-wrap:wrap;
+
 }
+.inside header {
+width:100%;
+}
+
+.inside main {
+
+  width:100%;
+}
+
+.inside footer {
+
+  width:100%;
+}
+.inside header {
+  /*position: fixed;
+  top: 0;*/
+  width: 100%;
+
+}
+
+.inside nav {
+  width: 100%;
+  /*height: 80px;*/
+
+  background-color: #252831;
+  text-align:center;
+}
+.inside nav h1 {
+  margin: auto;
+  padding: 15px 0px 15px 0px;
+}
+.inside nav h1 a {
+  color: #fff;
+  font-size: 5em;
+  font-weight: 200;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+
+}
+
+
+
 .inside #map-container {
-  background: blue none repeat scroll 0 0;
-  height: 87%;
-  position: fixed;
-  right: 0;
-  top: 80px;
-  width: 50%;
+ /* background: blue none repeat scroll 0 0;*/
+  height: 400px;
+  
+  
+  width: 100%;
 }
 .inside #map {
   background-color: #ccc;
   height: 100%;
   width: 100%;
 }
-.inside #footer {
-  bottom: 0;
-  position: absolute;
-  width: 50%;
-}
+
 #restaurant-name {
   color: #f18200;
   font-family: Arial,sans-serif;
@@ -258,12 +298,16 @@ justify-content: center;
   text-transform: uppercase;
   line-height: 1.1;
 }
+
+
 #restaurant-img {
-	width: 90%;
+  width: 90%;
+  padding-bottom:2%;
 }
 #restaurant-address {
   font-size: 12pt;
   margin: 10px 0px;
+  width:100%;
 }
 #restaurant-cuisine {
   background-color: #333;
@@ -275,16 +319,22 @@ justify-content: center;
   padding: 2px 0;
   text-align: center;
   text-transform: uppercase;
-	width: 90%;
+  width: 100%;
 }
 #restaurant-container, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
-  padding: 140px 40px 30px;
-  width: 50%;
+  /*padding: 140px 40px 30px;*/
+  width: 100%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content: center;
+  align-items: center;
 }
 #reviews-container {
-  padding: 30px 40px 80px;
+/*  padding: 30px 40px 80px;*/
+ 
+  order:10;
 }
 #reviews-container h2 {
   color: #f58500;
@@ -294,8 +344,13 @@ justify-content: center;
   padding-bottom: 1pt;
 }
 #reviews-list {
+
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-wrap:wrap;
+    align-items: center;
+  justify-content: center;
 }
 #reviews-list li {
   background-color: #fff;
@@ -306,11 +361,29 @@ justify-content: center;
   overflow: hidden;
   padding: 0 20px 20px;
   position: relative;
-  width: 85%;
+  width: 90%;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
+
+#reviews-list li:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.30);
+  }
 #reviews-list li p {
   margin: 0 0 10px;
 }
 #restaurant-hours td {
   color: #666;
+}
+
+
+#footer {
+  background-color: #444;
+  color: #aaa;
+  font-size: 2em;
+  letter-spacing: 1px;
+  padding: 25px;
+  text-align: center;
+  text-transform: uppercase;
+  width:100%;
+  order:100;
 }
