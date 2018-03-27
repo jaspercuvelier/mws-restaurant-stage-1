@@ -53,7 +53,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   name.innerHTML = restaurant.name;
 
   const address = document.getElementById('restaurant-address');
-  address.innerHTML = restaurant.address;
+  address.innerHTML = '<i class="material-icons">place</i>' + restaurant.address;
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
@@ -117,21 +117,50 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
-  const name = document.createElement('p');
+  const title = document.createElement('div')
+  title.className ='review-title'
+  const name = document.createElement('p')
+  name.className = 'review-name';
   name.innerHTML = review.name;
-  li.appendChild(name);
-
   const date = document.createElement('p');
+  date.className = 'review-date';
   date.innerHTML = review.date;
-  li.appendChild(date);
+  title.appendChild(name)
+  title.appendChild(date)
+  li.appendChild(title);
 
-  const rating = document.createElement('p');
-  rating.innerHTML = `Rating: ${review.rating}`;
-  li.appendChild(rating);
 
-  const comments = document.createElement('p');
+//  li.appendChild(date);
+  const reviewcontent = document.createElement('div');
+  reviewcontent.className='review-content';
+  const rating = document.createElement('div');
+
+  rating.className = "review-rating";
+  const ratingHolder = document.createElement('div');
+  ratingHolder.className = 'review-stars'
+
+  let ratinghtml = 'RATING: ';
+  for (let i=0;i<review.rating;i++)
+    {
+      ratinghtml = ratinghtml + '<i class="material-icons smallicons">star</i>'
+    }
+  for (let i=0;i<(5-review.rating);i++)
+      {
+        ratinghtml = ratinghtml + '<i class="material-icons smallicons">star_border</i>'
+      }
+
+
+    ratingHolder.innerHTML = ratinghtml// `Rating: ${review.rating}`;
+    rating.appendChild(ratingHolder);
+  reviewcontent.appendChild(rating);
+
+
+
+  const comments = document.createElement('div');
+  comments.className = 'review-comments'
   comments.innerHTML = review.comments;
-  li.appendChild(comments);
+  reviewcontent.appendChild(comments)
+  li.appendChild(reviewcontent);
 
   return li;
 }

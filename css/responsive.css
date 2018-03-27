@@ -4,18 +4,48 @@
 /* IF screen width is 500px */
 @media screen and (min-width:500px)
 	{
-		#restaurants-list li{
-			width:35%; /*GOED VOOR 2 CARDS NAAST ELKAAR */
-
-		/*padding: 10px 20px 25px;*/
-			}
-	}
-	
-@media screen and (min-width:700px)
+		#restaurant-hours td, #restaurant-address{
+			font-size:3.5vw;
+		}
+}
+@media screen and (min-width:500px)
 	{
 		#restaurants-list li{
-			/*width:25%;*/
-		/*	padding: 10px 10px 25px;*/
+			width:35%; /*GOED VOOR 2 CARDS NAAST ELKAAR */
+				}
+		#breadcrumb li a,#breadcrumb li {
+			font-size: 	15px;
+
+		}
+		#restaurants-list p,#restaurants-list li a {
+			font-size:2.5vw;
+		}
+		#restaurant-hours td, #restaurant-address{
+			font-size:17px;
+		}
+		.review-name, .review-date{
+			font-size:4vw;
+		}
+		.review-comments, .review-stars, .smallicons{
+			font-size:3vw;
+		}
+	}
+
+@media screen and (min-width:700px)
+	{
+		#restaurants-list li{}
+		#restaurants-list p,#restaurants-list li a {
+				font-size:2vw;
+		}
+		.review-name, .review-date{
+			font-size:3vw;
+		}
+		 .review-stars, .smallicons{
+			font-size:21px;
+		}
+		.review-comments {
+			font-size:17px;
+		}
 
 	}
 @media screen and (min-width:800px)
@@ -26,17 +56,72 @@
 			/*padding: 10px 20px 25px;*/
 		}
 
+		#restaurants-list p,#restaurants-list li a {
+				font-size:16px;
+		}
+		.review-name, .review-date{
+			font-size:24px;
+		}
+
 	}
 
 
 
-@media screen and (min-width:1200px)
+@media screen and (min-width:850px)
 	{
+		#maincontent {
+			display:flex;
+			flex-wrap:wrap;
+			margin:0 auto;
+			width:850px;
+		}
+		.inside #map-container {
+			width:100%;
 
-		#restaurants-list li{width:15%;}
+		}
+		#restaurant-container{
+			width:100%;
+
+		}
+		/*SET MARGIN FOR END OF RESPONISIVENESS*/
+	/*  body {
+				margin:0 auto;
+				width:850px;
+				background-color:smokegrey;
+		}*/
+		#restaurants-list li{
+				width:25%;
+			}
+		/*FIX FONT SIZES*/
+		nav h1 a {
+			font-size:2em;
+		}
+		.filter-options h2 {
+			font-size:1em;
+		}
+
+		#restaurant-cuisine {
+
+  		font-size: 25.5px;
+
+		}
+		#restaurant-name {
+
+  		font-size: 25.5px;
+
+		}
+		#reviews-container h2{
+			font-size: 25.5px;
+		}
+		#restaurant-hours td,#restaurant-address{
+			font-size:17px;
+		}
+
+		#footer{
+			font-size:17px;
+		}
 
 	}
-
 @media screen and (min-width:1px){
 
 }
