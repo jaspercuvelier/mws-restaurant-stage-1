@@ -9,3 +9,9 @@ BODY ==> FLEXCONTAINER
 	BINNEN BODY IS RESTAURANTLIST (UL) ==> FLEXCONTAINER
 		LI WIDTH past dus binnen UL. Hoe wijder de pagina, hoe kleiner percentage van de li width;
 		Waardoor er meer kaartjes naast elkaar komen.
+
+
+images:
+Small: 300 X 300
+Medium  500 x 500
+Large: 800 x 800

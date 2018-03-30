@@ -56,8 +56,15 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = '<i class="material-icons">place</i>' + restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
+  image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  $("#restaurant-img-medium").attr("srcset",DBHelper.imageUrlForRestaurant(restaurant)+"-medium.jpg");
+  $("#restaurant-img-large").attr("srcset",DBHelper.imageUrlForRestaurant(restaurant)+"-large.jpg");
+$("#restaurant-img-small").attr("src",DBHelper.imageUrlForRestaurant(restaurant)+"-small.jpg");
+    //const image_medium = document.getElementsByTagName[0]('source');
+  //image_medium.className = 'TESTKLAS'//setAttribute("srcset","TESTMAN.jpg");
+
+
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;

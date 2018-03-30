@@ -150,7 +150,9 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    //returns only filename without the file extension...
+
+    return (`/img/${restaurant.photograph.split('.')[0]}`);
   }
 
   /**
