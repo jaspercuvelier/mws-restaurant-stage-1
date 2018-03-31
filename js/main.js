@@ -20,8 +20,8 @@ enableServiceWorker = () =>{
     if (!navigator.serviceWorker) return;
     navigator.serviceWorker.register('js/sw.js').then(function() {
       console.log('ServiceWorker enabled!!');
-    }).catch(function() {
-      console.log('SW >> Dooh!');
+    }).catch(function(err) {
+      console.log('SW >> Dooh!' + err);
     });
 
 };
