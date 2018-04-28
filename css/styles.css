@@ -3,6 +3,24 @@
 
 /* Prepare for resonsive design
 Body becomes "container element for flex-box"*/
+button:focus,
+a:focus,
+select:focus{
+
+  outline: 0;
+  box-shadow: 0 0 8px 3px
+  rgba(255, 255, 255,0.8);
+
+}
+#restaurants-list li h1 a:focus{
+  outline: 0;
+  box-shadow: 0 0 8px 3px
+  rgba(95, 173, 247, 0.8);
+
+}
+
+
+
 body {
 
   display:flex;
@@ -32,10 +50,7 @@ a {
 	color: orange;
 	text-decoration: none;
 }
-a:hover, a:focus {
-	color: #3397db;
-	text-decoration: none;
-}
+
 a img{
 	border: none 0px #fff;
 }
@@ -186,10 +201,10 @@ nav h1 a {
  /* margin: 0; */
   object-fit: cover;
   max-width:  60%;
-
+  display:flex;
   min-width: 100%;
   justify-content: center;
-
+  align-items:center;
 
 }
 
@@ -205,23 +220,27 @@ nav h1 a {
    /* min-height: 3em;  NIET OPTIMAAL, WAT ALS HOOGTE MEER IS DAN 3 LIJNTJES? */
    justify-content: center;
    flex:1;
+   display:flex;
+   flex-wrap:wrap;
 }
 #restaurants-list p {
   margin: 0;
   font-size: 3vw;
   justify-content: center;
-
-
 }
-#restaurants-list li a {
+
+#restaurants-list li h1 a {
+  width:100%;
+  align-items:center;
   background-color: orange;
   color: #fff;
-  display: inline-block;
-  font-size: 3vw;
+line-height: 42px;
+  font-size: 4vw;
   margin: 15px 0 0;
   padding: 8px 30px 10px;
   text-align: center;  border-bottom: 3px solid #eee;
-
+/*  min-width: 70%;*/
+  height:42px;
   text-decoration: none;
   text-transform: uppercase;
   justify-content: center;

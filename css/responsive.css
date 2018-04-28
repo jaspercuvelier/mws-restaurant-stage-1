@@ -13,11 +13,12 @@
 		#restaurants-list li{
 			width:35%; /*GOED VOOR 2 CARDS NAAST ELKAAR */
 				}
+
 		#breadcrumb li a,#breadcrumb li {
 			font-size: 	15px;
 
 		}
-		#restaurants-list p,#restaurants-list li a {
+		#restaurants-list p,#restaurants-list li h1 a {
 			font-size:2.5vw;
 		}
 		#restaurant-hours td, #restaurant-address{
@@ -34,7 +35,7 @@
 @media screen and (min-width:700px)
 	{
 		#restaurants-list li{}
-		#restaurants-list p,#restaurants-list li a {
+		#restaurants-list p,#restaurants-list li h1 a {
 				font-size:2vw;
 		}
 		.review-name, .review-date{
@@ -56,7 +57,7 @@
 			/*padding: 10px 20px 25px;*/
 		}
 
-		#restaurants-list p,#restaurants-list li a {
+		#restaurants-list p,#restaurants-list li h1 a {
 				font-size:16px;
 		}
 		.review-name, .review-date{

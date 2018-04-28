@@ -1,4 +1,4 @@
-const staticCacheName = 'restrev-v6';
+const staticCacheName = 'restrev-v7';
 /* on install of the service worker, add items to cache */
 self.addEventListener('install', function(event) {
   event.waitUntil(
@@ -41,12 +41,14 @@ self.addEventListener('activate', function(event) {
 
 
 self.addEventListener('fetch', function(event) {
-  event.respondWith(new Response("hello world!"));
-  console.log(event.request);
-/*  event.respondWith(
-    caches.match(event.request).then(function(response){
-      if (response) return response;
-      if (response.status === 404) return new Response("Not found... offline!");
-      return fetch(event.request);
-    }));*/
+  event.respondWith(
+    caches.open(staticCacheName).then(function(cache) {
+      return cache.match(event.request).then(function (response) {
+        return response || fetch(event.request).then(function(response) {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      });
+    })
+  );
   });
