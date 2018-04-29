@@ -104,8 +104,13 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+
+  // remove tabindex items
+
+
   updateRestaurants();
 }
+
 
 /**
  * Update page and map for current restaurants.

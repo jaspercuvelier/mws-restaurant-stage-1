@@ -61,9 +61,11 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+    image.setAttribute("alt",`Picture of the restaurant: ${restaurant.name}`);
   $("#restaurant-img-medium").attr("srcset",DBHelper.imageUrlForRestaurant(restaurant)+"-medium.jpg");
   $("#restaurant-img-large").attr("srcset",DBHelper.imageUrlForRestaurant(restaurant)+"-large.jpg");
 $("#restaurant-img-small").attr("src",DBHelper.imageUrlForRestaurant(restaurant)+"-small.jpg");
+
     //const image_medium = document.getElementsByTagName[0]('source');
   //image_medium.className = 'TESTKLAS'//setAttribute("srcset","TESTMAN.jpg");
 
@@ -180,8 +182,10 @@ createReviewHTML = (review) => {
  */
 fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
+  breadcrumb.setAttribute("aria-label","Breadcrumb");
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
+  li.setAttribute("aria-current","page");
   breadcrumb.appendChild(li);
 }
 
