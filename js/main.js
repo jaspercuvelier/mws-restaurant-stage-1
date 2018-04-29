@@ -173,7 +173,7 @@ createRestaurantHTML = (restaurant) => {
   image.setAttribute("alt",`Picture of the restaurant: ${restaurant.name}`);
   li.append(image);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h3');
   const restlink = document.createElement('a');
   restlink.innerHTML = restaurant.name;
   restlink.href = DBHelper.urlForRestaurant(restaurant);
