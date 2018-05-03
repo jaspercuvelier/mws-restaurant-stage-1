@@ -37,6 +37,10 @@ self.addEventListener('activate', function(event) {
 
 
 
+/*
+TO DO: NOT WORKING!!!! still got 404 error!
+Other possibility is to fix this using the dbhelper  imageUrlForRestaurant(restaurant)  and return a 404 image...
+ On fetching stuff, add to cache. If responsestatus is 404 (file not found), replace with placeholder image. */
 
 self.addEventListener('fetch', function(event) {
   console.log(event.request);
