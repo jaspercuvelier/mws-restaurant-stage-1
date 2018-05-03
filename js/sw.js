@@ -1,4 +1,4 @@
-const staticCacheName = 'restrev-v7';
+const staticCacheName = 'restrev-v11';
 /* on install of the service worker, add items to cache */
 self.addEventListener('install', function(event) {
   event.waitUntil(
@@ -6,14 +6,12 @@ self.addEventListener('install', function(event) {
       return cache.addAll([
         '/index.html',
         '/restaurant.html',
-        '/data/restaurants.json',
         '/css/styles.css',
         '/css/responsive.css',
         '/js/main.js',
         'http://localhost:8000/js/main.js',
         '/js/dbhelper.js',
         '/js/restaurant_info.js',
-        '/img/2-small.jpg',
         'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'
           ]);
     })
@@ -41,11 +39,17 @@ self.addEventListener('activate', function(event) {
 
 
 self.addEventListener('fetch', function(event) {
+  console.log(event.request);
   event.respondWith(
+
     caches.open(staticCacheName).then(function(cache) {
       return cache.match(event.request).then(function (response) {
         return response || fetch(event.request).then(function(response) {
+          if(response.status === 404) {
+            return fetch('/img/3-small.jpg'); // <-- REPLACE THIS WITH 404-IMG
+          }
           cache.put(event.request, response.clone());
+
           return response;
         });
       });
