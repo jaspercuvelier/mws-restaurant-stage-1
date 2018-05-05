@@ -1,8 +1,9 @@
-const staticCacheName = 'restrev-v11';
+const staticCacheName = 'restrev-v1';
 /* on install of the service worker, add items to cache */
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
+
       return cache.addAll([
         '/index.html',
         '/restaurant.html',
@@ -19,7 +20,6 @@ self.addEventListener('install', function(event) {
 
 });
 
-
 /*Remove old caches on activating new service worker*/
 self.addEventListener('activate', function(event) {
   event.waitUntil(
@@ -35,23 +35,19 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-
-
 /*
-TO DO: NOT WORKING!!!! still got 404 error!
-Other possibility is to fix this using the dbhelper  imageUrlForRestaurant(restaurant)  and return a 404 image...
+TO DO: 
  On fetching stuff, add to cache. If responsestatus is 404 (file not found), replace with placeholder image. */
 
 self.addEventListener('fetch', function(event) {
-  console.log(event.request);
+  console.log(event);
   event.respondWith(
-
     caches.open(staticCacheName).then(function(cache) {
       return cache.match(event.request).then(function (response) {
         return response || fetch(event.request).then(function(response) {
           if(response.status === 404) {
-            return fetch('/img/3-small.jpg'); // <-- REPLACE THIS WITH 404-IMG
-          }
+            return fetch('/img/404.jpg'); // <-- REPLACE THIS WITH 404-IMG
+          };
           cache.put(event.request, response.clone());
 
           return response;
