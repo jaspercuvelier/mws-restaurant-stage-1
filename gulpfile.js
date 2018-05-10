@@ -4,8 +4,11 @@ var autoprefixer = require('gulp-autoprefixer');
 var browserSync = require('browser-sync').create();
 var imagemin = require('gulp-imagemin');
 var concat = require('gulp-concat');
+var babel = require('gulp-babel');
 
-gulp.task('default', ['styles','copy-html-sw'], function() {
+
+
+gulp.task('default', ['styles','copy-html-sw','scripts'], function() {
 	gulp.watch('sass/**/*.scss', ['styles']);
 	gulp.watch(['./index.html','./restaurant.html','./sw.js'],['copy-html-sw']);
 	gulp.watch('./js/**/*.js',['scripts']);
@@ -44,6 +47,7 @@ gulp.task('scripts',function(){
 	gulp.src('js/**/*.js')
 		.pipe(concat('all.js'))
 		.pipe(gulp.dest('dist/js'));
+
 	});
 
 gulp.task('scripts-dist',function(){

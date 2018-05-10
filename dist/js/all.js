@@ -26,6 +26,12 @@ class DBHelper {
 
 				const restaurants = json;//.restaurants;
 				//  console.log(restaurants);
+				dbPromise.then(function(db) {
+					var tx = db.transaction('restOverviews');
+					var restOverviewsStore = tx.objectStore('restOverviews');
+					return restOverviewsStore.get('JSON');
+				}).then((val) => console.log('returned value is '+ val));
+
 				callback(null, restaurants);
 			} else { // Oops!. Got an error from server.
 				const error = (`Request failed. Returned status of ${xhr.status}`);
@@ -182,7 +188,18 @@ class DBHelper {
 
 }
 
-//INDEXCONTROLLER START import idb from 'idb';
+//INDEXCONTROLLER START
+var idb = import('idb');
+var dbPromise = idb.open('restrev',1,function(upgradeDb){
+	var restOverviewsStore = upgradeDb.createObjectStore('restOverviews');
+	restOverviewsStore.put('hier komen de JSON waarden.','JSON');
+});
+
+dbPromise.then(function(db) {
+	var tx = db.transaction('restOverviews');
+	var restOverviewsStore = tx.objectStore('restOverviews');
+	return restOverviewsStore.get('JSON');
+}).then((val) => console.log('returned value is '+ val));
 
 let restaurants,
 	neighborhoods,
