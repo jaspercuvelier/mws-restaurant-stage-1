@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Normalize.css for better cross-browser consistency -->
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Main CSS file -->
+  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <link rel="stylesheet" href="css/responsive.css" type="text/css">
+  <meta charset="UTF-8">
+  <title>Restaurant Info</title>
+</head>
+
+<body class="inside">
+  <!-- Beginning header -->
+  <header>
+    <!-- Beginning nav -->
+    <nav>
+      <h1><a href="/">Restaurant Reviews</a></h1>
+
+    <!-- Beginning breadcrumb -->
+    <ul id="breadcrumb" >
+      <li><a href="/">Home</a></li>
+    </ul>
+    <!-- End breadcrumb -->
+    <!-- End nav -->
+    </nav>
+  </header>
+  <!-- End header -->
+
+  <!-- Beginning main -->
+  <main id="maincontent">
+    <!-- Beginning map -->
+    <section id="map-container">
+        <a class="skiplink" href="#filterbar">Skip map</a>
+      <div id="map" role="application"></div>
+    </section>
+    <!-- End map -->
+    <!-- Beginning restaurant -->
+    <section id="restaurant-container">
+      <h2 id="restaurant-name"></h2>
+      <!--<img > -->
+      <picture id="restaurant-img">
+        <source id="restaurant-img-large" media="(min-width: 800px)" srcset="">
+        <source id="restaurant-img-medium" media="(min-width: 550px)" srcset="">
+        <img id="restaurant-img-small" src="" alt="Image of the restaurant" class="restaurant-img">
+      </picture>
+      <p id="restaurant-cuisine"></p>
+      <p id="restaurant-address"></p>
+      <table id="restaurant-hours"></table>
+    </section>
+    <!-- end restaurant -->
+    <!-- Beginning reviews -->
+    <section id="reviews-container">
+      <ul id="reviews-list"></ul>
+    </section>
+    <!-- End reviews -->
+  </main>
+  <!-- End main -->
+
+  <!-- Beginning footer -->
+  <footer id="footer">
+    Copyright &#169; 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
+  <!-- End footer -->
+
+  <!-- Beginning scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- JS -->
+  <script type="text/javascript" src="js/all.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+  	enableServiceWorker();
+  	fetchNeighborhoods();
+  	fetchCuisines();
+  });
+  </script>
+  <!-- Google Maps -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4Y8lynieDgt4tKCFU33ThBHkT7a3TwtY&libraries=places&callback=initMap"></script>
+  <!-- End scripts -->
+  <script>
+  /**
+   * Initialize Google map, called from HTML.
+    */
+  window.initMap = () => {
+    fetchRestaurantFromURL((error, restaurant) => {
+      if (error) { // Got an error!
+        console.error(error);
+      } else {
+        self.map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          center: restaurant.latlng,
+          scrollwheel: false
+        });
+        fillBreadcrumb();
+        DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      }
+    });
+  }
+
+  </script>
+</body>
+
+</html>

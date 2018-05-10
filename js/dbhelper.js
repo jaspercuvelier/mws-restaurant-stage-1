@@ -157,6 +157,7 @@ class DBHelper {
 	static imageUrlForRestaurant(restaurant) {
 		//returns only filename without the file extension...
 		//  if (restaurant.photograph){
+
 		return (`/img/${restaurant.photograph}`);
 		//  }
 		//   else{

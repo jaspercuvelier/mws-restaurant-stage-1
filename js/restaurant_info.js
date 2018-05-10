@@ -6,7 +6,7 @@ var map;
 
 /**
  * Initialize Google map, called from HTML.
- */
+   
 window.initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
@@ -22,6 +22,7 @@ window.initMap = () => {
     }
   });
 }
+*/
 
 /**
  * Get current restaurant from page URL.
