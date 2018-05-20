@@ -12,12 +12,65 @@ class DBHelper {
 		return `http://localhost:${port}/restaurants/`;
 	}
 
+	static dbPromise(){
+		return idb.open('restrev',1,function(upgradeDb){
+			upgradeDb.createObjectStore('restaurants');
+		});
+	}
+
+
+
 	/**
    * Fetch all restaurants.
    */
 	static fetchRestaurants(callback) {
+		console.log('Start fetching restaurants...');
+		DBHelper.dbPromise().then(function(db) {if (!db){return;}
+
+			const tx= db.transaction('restaurants');
+			const store= tx.objectStore('restaurants');
+			console.log('Opened DB...');
+			return store.getAll();
+		}).then(restaurants => {
+			console.log('found restaurants = '+ restaurants);
+			if(restaurants && restaurants.length > 10){
+				console.log('Found restaurants in indexedDB and returning them...');
+				return callback(null, restaurants);
+			}
+			else {
+				console.log('Sending network request for restaurants...');
+				fetch(`${DBHelper.DATABASE_URL}`).then( response => {
+					if (response.status !== 200){
+						const error = 'Error! code:' + response.status;
+						return callback(error,null);
+					}
+					console.log('netwerk request successfull...');
+					response.json().then(restaurants => {
+						DBHelper.dbPromise().then(db => {
+							console.log('Saving to idb => restaurants...');
+							if(!db){return;}
+							const tx = db.transaction('restaurants','readwrite');
+							const store = tx.objectStore('restaurants');
+							console.log("restaurants die we ontvingen via fetch:" + restaurants);
+							for (let restaurant of restaurants)
+							{
+							store.put(restaurant,restaurant.name);
+								console.log('Saving one of the restaurants...')
+							}
+						});
+						return callback(null,restaurants);
+					});
+				}).catch(error => {console.log('Error while fetching: ' + error);});
+			}
+		});
+
+
+
+
 		/*ALS DIT NIET IN DE INDEXEDDB ZIT, FETCH IT, ANDERS OPHALEN UIT INDEXEDDB */
-		let xhr = new XMLHttpRequest();
+
+		/* Doorzoek IDB, indien gevonden, return JSON uit idb, else ophalen van server*/
+	/*	let xhr = new XMLHttpRequest();
 		xhr.open('GET', DBHelper.DATABASE_URL);
 		xhr.onload = () => {
 			if (xhr.status === 200) { // Got a success response from server!
@@ -28,12 +81,13 @@ class DBHelper {
 				//  console.log(restaurants);
 
 				callback(null, restaurants);
+
 			} else { // Oops!. Got an error from server.
 				const error = (`Request failed. Returned status of ${xhr.status}`);
 				callback(error, null);
 			}
 		};
-		xhr.send();
+		xhr.send();*/
 	}
 
 	/**
@@ -157,14 +211,14 @@ class DBHelper {
    */
 	static imageUrlForRestaurant(restaurant) {
 		//returns only filename without the file extension...
-		//  if (restaurant.photograph){
+	//	  if (restaurant.photograph){
 
 		return (`/img/${restaurant.photograph}`);
-		//  }
-		//   else{
-		//      return (`/img/5`);
+///		  }
+//		   else{
+	//	     return (`/img/5`);
 
-		//    }
+		//   }
 	}
 
 	/**

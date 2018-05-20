@@ -15,7 +15,7 @@ var markers = [];
 enableServiceWorker = () =>{
 	if (!navigator.serviceWorker) return;
 	navigator.serviceWorker.register('sw.js').then(function(resp) {
-		console.log('ServiceWorker enabled!! >> ' +resp);
+		console.log('ServiceWorker enabled!! ');
 	}).catch(function(err) {
 		console.log('SW >> Dooh!' + err);
 	});
@@ -41,6 +41,7 @@ fetchNeighborhoods = () => {
 			console.error(error);
 		} else {
 			self.neighborhoods = neighborhoods;
+			console.log('filling neighborhoods')
 			fillNeighborhoodsHTML();
 		}
 	});
