@@ -156,6 +156,9 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 		ul.append(createRestaurantHTML(restaurant));
 	});
 	addMarkersToMap();
+	$('.lazy').Lazy({
+		onLoad: function(element){console.log(element.src + " loaded...")}
+	});
 };
 
 /**
@@ -165,9 +168,10 @@ createRestaurantHTML = (restaurant) => {
 	const li = document.createElement('li');
 
 	const image = document.createElement('img');
-	image.className = 'restaurant-img';
-	image.src = DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
+	image.className = 'restaurant-img lazy';
+	image.src = '/img/404.jpg'//DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
 	image.setAttribute('alt',`Picture of the restaurant: ${restaurant.name}`);
+	image.setAttribute('data-src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg' );
 	li.append(image);
 
 	const name = document.createElement('h3');

@@ -1,4 +1,4 @@
-const staticCacheName = 'restrev-v5';
+const staticCacheName = 'restrev-v3';
 /* on install of the service worker, add items to cache */
 self.addEventListener('install', function(event) {
 	if (self.skipWaiting) { self.skipWaiting(); }
@@ -10,7 +10,7 @@ self.addEventListener('install', function(event) {
 				'/restaurant.html',
 				'/css/styles.css',
 				'/css/responsive.css',
-			//	'/js/all.js',
+				'/js/all.js',
 				'/img/404.jpg',
 				'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'
 			]);

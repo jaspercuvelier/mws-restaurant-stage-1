@@ -29,18 +29,21 @@ gulp.task('styles', function() {
 });
 
 gulp.task('minify-img', () =>
-    gulp.src('img/*')
-        .pipe(imagemin())
-        .pipe(gulp.dest('./dist/img'))
+	gulp.src('img/*')
+		.pipe(imagemin([
+			imagemin.gifsicle({interlaced: true}),
+			imagemin.jpegtran({progressive: true}),
+			imagemin.optipng({optimizationLevel: 5})]))
+		.pipe(gulp.dest('./dist/img'))
 );
 
 gulp.task('copy-html-sw', function(){
 	gulp.src('./index.html')
 		.pipe(gulp.dest('./dist'));
 	gulp.src('./restaurant.html')
-			.pipe(gulp.dest('./dist'));
+		.pipe(gulp.dest('./dist'));
 	gulp.src('./sw.js')
-			.pipe(gulp.dest('./dist'));
+		.pipe(gulp.dest('./dist'));
 });
 
 gulp.task('scripts',function(){
@@ -48,10 +51,10 @@ gulp.task('scripts',function(){
 		.pipe(concat('all.js'))
 		.pipe(gulp.dest('dist/js'));
 
-	});
+});
 
 gulp.task('scripts-dist',function(){
 	gulp.src('js/**/*.js')
 		.pipe(concat('all.js'))
 		.pipe(gulp.dest('dist/js'));
-	});
+});

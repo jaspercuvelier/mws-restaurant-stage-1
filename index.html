@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="UTF-8">
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100i" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
- <link rel="stylesheet" href="css/responsive.css">
+  <meta name="theme-color" content="#252525">
+  <meta charset="UTF-8">
+
+  <link rel="manifest" href="/manifest.json">
+
+
   <title>Restaurant Reviews</title>
 </head>
 
@@ -27,10 +27,10 @@
     <section>
       <div id="filterbar" class="filter-options">
         <h2>Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+        <select aria-label="Neighborhoods selector" id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+        <select aria-label="Cuisines selector" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>
       </div>
@@ -41,13 +41,39 @@
   </main>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
   <script type="application/javascript" charset="utf-8" src="js/all.js"></script>
+
+  <noscript id="deferred-styles">
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" >
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100i" rel="stylesheet" >
+  </noscript>
   <script>
+    var loadDeferredStyles = function() {
+      var addStylesNode = document.getElementById("deferred-styles");
+      var replacement = document.createElement("div");
+      replacement.innerHTML = addStylesNode.textContent;
+      document.body.appendChild(replacement)
+      addStylesNode.parentElement.removeChild(addStylesNode);
+    };
+    var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+    if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
+    else window.addEventListener('load', loadDeferredStyles);
+  </script>
+
+
+  <script>
+
   document.addEventListener('DOMContentLoaded', (event) => {
+
     enableServiceWorker();
-    //fetchNeighborhoods();
-    //fetchCuisines();
+
   });
+
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4Y8lynieDgt4tKCFU33ThBHkT7a3TwtY&libraries=places&callback=initMap"></script>
 
