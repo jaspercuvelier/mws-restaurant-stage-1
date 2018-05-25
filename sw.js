@@ -1,4 +1,4 @@
-const staticCacheName = 'restrev-v3';
+const staticCacheName = 'restrev-v10';
 /* on install of the service worker, add items to cache */
 self.addEventListener('install', function(event) {
 	if (self.skipWaiting) { self.skipWaiting(); }

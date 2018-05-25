@@ -158,6 +158,28 @@ nav h1 a {
   height: 400px;
   width: 100%;
   background-color: #ccc;
+  display:flex;
+  flew-wrap:wrap;
+  background-image: url('/img/maps.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+#map .maploader{
+  width:70%;
+  align-self: center;
+  margin:0 auto;
+  padding: 20px;
+  background-color:  #444;
+  color: white;
+  border: 0px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-variant: all-small-caps;
+}
+#map .maploader:hover{
+background-color:  #2355EB;
+
 }
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
@@ -165,6 +187,7 @@ nav h1 a {
   /*height: 50px; #3397DB;*/
   background-color: #2355EB;
   align-itvws: center;
+  font-family: 'Roboto', sans-serif;
 }
 .filter-options h2 {
   color: white;

@@ -22,7 +22,7 @@
   <main id="maincontent">
     <section id="map-container">
       <a class="skiplink" href="#filterbar">Skip map</a>
-      <div id="map" role="application" ></div>
+      <div id="map" role="application"> <button class="maploader" onclick="initMap()">Click to load map</button></div>
     </section>
     <section>
       <div id="filterbar" class="filter-options">
@@ -40,6 +40,10 @@
     </section>
   </main>
 
+
+  <footer id="footer">
+    Copyright &#169; 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
@@ -67,6 +71,7 @@
 
 
   <script>
+  updateRestaurants();
 
   document.addEventListener('DOMContentLoaded', (event) => {
 
@@ -75,12 +80,8 @@
   });
 
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4Y8lynieDgt4tKCFU33ThBHkT7a3TwtY&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4Y8lynieDgt4tKCFU33ThBHkT7a3TwtY&libraries=places"></script>
 
-
-  <footer id="footer">
-    Copyright &#169; 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
-  </footer>
 
 </body>
 
