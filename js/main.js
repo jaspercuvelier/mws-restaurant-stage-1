@@ -41,7 +41,7 @@ fetchNeighborhoods = () => {
 			console.error(error);
 		} else {
 			self.neighborhoods = neighborhoods;
-			console.log('filling neighborhoods')
+			console.log('filling neighborhoods');
 			fillNeighborhoodsHTML();
 		}
 	});
@@ -157,7 +157,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 	});
 	addMarkersToMap();
 	$('.lazy').Lazy({
-		onLoad: function(element){console.log(element.src + " loaded...")}
+		onLoad: function(element){console.log(element.src + ' loaded...');}
 	});
 };
 
@@ -169,7 +169,7 @@ createRestaurantHTML = (restaurant) => {
 
 	const image = document.createElement('img');
 	image.className = 'restaurant-img lazy';
-	image.src = '/img/404.jpg'//DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
+	image.src = '/img/404.jpg';//DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
 	image.setAttribute('alt',`Picture of the restaurant: ${restaurant.name}`);
 	image.setAttribute('data-src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg' );
 	li.append(image);
@@ -190,10 +190,6 @@ createRestaurantHTML = (restaurant) => {
 	address.innerHTML =  restaurant.address;
 	li.append(address);
 
-	/*const more = document.createElement('a');
-  more.innerHTML = 'View Details';
-  more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)*/
 
 	return li;
 };

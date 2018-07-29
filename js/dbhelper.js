@@ -9,12 +9,14 @@ class DBHelper {
    */
 	static get DATABASE_URL() {
 		const port = 1337; // Change this to your server port
-		return `http://localhost:${port}/restaurants/`;
+		return `http://localhost:${port}/`;
 	}
 
 	static dbPromise(){
 		return idb.open('restrev',1,function(upgradeDb){
 			upgradeDb.createObjectStore('restaurants');
+			upgradeDb.createObjectStore('allReviews', {keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
+			upgradeDb.createObjectStore('offlineReviews', {autoIncrement:true, keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
 		});
 	}
 
@@ -24,7 +26,7 @@ class DBHelper {
    * Fetch all restaurants.
    */
 	static fetchRestaurants(callback) {
-		console.log('Start fetching restaurants...');
+
 		DBHelper.dbPromise().then(function(db) {if (!db){return;}
 
 			const tx= db.transaction('restaurants');
@@ -39,23 +41,21 @@ class DBHelper {
 			}
 			else {
 				console.log('Sending network request for restaurants...');
-				fetch(`${DBHelper.DATABASE_URL}`).then( response => {
+				fetch(`${DBHelper.DATABASE_URL}restaurants`).then( response => {
 					if (response.status !== 200){
 						const error = 'Error! code:' + response.status;
 						return callback(error,null);
 					}
-					console.log('netwerk request successfull...');
 					response.json().then(restaurants => {
 						DBHelper.dbPromise().then(db => {
 							console.log('Saving to idb => restaurants...');
 							if(!db){return;}
 							const tx = db.transaction('restaurants','readwrite');
 							const store = tx.objectStore('restaurants');
-							console.log("restaurants die we ontvingen via fetch:" + restaurants);
+							console.log('restaurants die we ontvingen via fetch:' + restaurants);
 							for (let restaurant of restaurants)
 							{
-							store.put(restaurant,restaurant.name);
-								console.log('Saving one of the restaurants...')
+								store.put(restaurant,restaurant.name);
 							}
 						});
 						return callback(null,restaurants);
@@ -63,32 +63,11 @@ class DBHelper {
 				}).catch(error => {console.log('Error while fetching: ' + error);});
 			}
 		});
-
-
-
-
-		/*ALS DIT NIET IN DE INDEXEDDB ZIT, FETCH IT, ANDERS OPHALEN UIT INDEXEDDB */
-
-		/* Doorzoek IDB, indien gevonden, return JSON uit idb, else ophalen van server*/
-	/*	let xhr = new XMLHttpRequest();
-		xhr.open('GET', DBHelper.DATABASE_URL);
-		xhr.onload = () => {
-			if (xhr.status === 200) { // Got a success response from server!
-
-				const json = JSON.parse(xhr.responseText);
-
-				const restaurants = json;//.restaurants;
-				//  console.log(restaurants);
-
-				callback(null, restaurants);
-
-			} else { // Oops!. Got an error from server.
-				const error = (`Request failed. Returned status of ${xhr.status}`);
-				callback(error, null);
-			}
-		};
-		xhr.send();*/
 	}
+
+
+
+
 
 	/**
    * Fetch a restaurant by its ID.
@@ -211,14 +190,10 @@ class DBHelper {
    */
 	static imageUrlForRestaurant(restaurant) {
 		//returns only filename without the file extension...
-	//	  if (restaurant.photograph){
+		//	  if (restaurant.photograph){
 
 		return (`/img/${restaurant.photograph}`);
-///		  }
-//		   else{
-	//	     return (`/img/5`);
 
-		//   }
 	}
 
 	/**
@@ -233,6 +208,94 @@ class DBHelper {
 			animation: google.maps.Animation.DROP}
 		);
 		return marker;
+	}
+
+	/**
+	   * Fetch all reviews for a restaurant.
+	   */
+	static fetchReviewsForARestaurant(restaurantID, callback) {
+
+		DBHelper.dbPromise().then(function(db) {
+			if (!db) return;
+
+			const tx = db.transaction('allReviews');
+			const store = tx.objectStore('allReviews');
+			const restaurantIDIndex = store.index('restaurant_id');
+
+			return restaurantIDIndex.getAll(restaurantID);
+		}).then(reviews => {
+			if(reviews && reviews.length >= 1) {
+				return callback(null, reviews);
+			} else {
+				fetch(`${DBHelper.DATABASE_URL}reviews/?restaurant_id=${restaurantID}`)
+					.then(
+						function(response) {
+							if (response.status !== 200) {
+								console.log('Looks like there was a problem. Status Code: ' + response.status);
+								return callback(error, null);
+							}
+
+							response.json().then(function(reviews) {
+								DBHelper.dbPromise().then(function(db) {
+									if (!db) return;
+									const tx = db.transaction('allReviews', 'readwrite');
+									const store = tx.objectStore('allReviews');
+									//Saving reviews in allReviews-store...
+									for (let review of reviews) {
+										store.put(review);
+									}
+								});
+								return callback(null, reviews);
+							});
+						}
+					)
+					.catch(function(errmessage) {
+						console.log('fetchprobleem bij ophalen van reviews voor restaurant met id '+restaurantID+ '! '+ errmessage);
+					});
+			}
+		});
+	}
+
+
+	/**
+   * Post a review.
+   */
+	static postReview(reviewData, callback) {
+
+		fetch('http://localhost:1337/reviews/', {
+			method: 'POST',
+			body: JSON.stringify(reviewData),
+			headers: new Headers({
+				'Content-Type': 'application/json'
+			})
+		}).then(response => {
+			if (response.status !== 201) {
+				const error = 'Looks like there was a problem. Status Code: ' + response.status;
+				console.log(error);
+			}
+			response.json().then(function(review) {
+				DBHelper.dbPromise().then(function(db) {
+					if (!db) return;
+
+					const tx = db.transaction('allReviews', 'readwrite');
+					const store = tx.objectStore('allReviews');
+					store.put(review);
+				});
+				return callback(false, review);
+			});
+		}).catch(function(err) {
+			console.log('Fetch Error :-S', err);
+
+			reviewData.createdAt = reviewData.updatedAt = new Date();
+			DBHelper.dbPromise().then(function(db) {
+				if (!db) return;
+
+				const tx = db.transaction('offlineReviews', 'readwrite');
+				const store = tx.objectStore('offlineReviews');
+				store.put(reviewData);
+			});
+			return callback(true, reviewData);
+		});
 	}
 
 }

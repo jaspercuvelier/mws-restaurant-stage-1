@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Main CSS file -->
   <link rel="stylesheet" href="css/styles.css" type="text/css">
-
+  <link rel="stylesheet" href="css/toastr.css" type="text/css">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#252525">
   <meta charset="UTF-8">
@@ -39,6 +39,7 @@
       <div id="map" role="application"></div>
     </section>
     <!-- End map -->
+
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
@@ -53,9 +54,47 @@
       <table id="restaurant-hours"></table>
     </section>
     <!-- end restaurant -->
+    <!-- BEGIN leave a review form
+    <div class="">
+    <form onsubmit="sendOrSaveReview();">
+      <h3>Your Comment</h3>
+      <label for="restaurant_id">Id</label>
+      <input name="restaurant_id" id="restaurant_id" class="form-element review-title" type="text" required>
+      <label for="name">Name</label>
+      <input name="name" id="name" class="form-element review-title" type="text" required>
+      <label for="rating">Rating</label>
+      <input class="form-element" name="rating" id="rating" type="number" min="1" max="5" value="5" required>
+      <label for="comments">Comment</label>
+      <textarea name="comments" id="comments" required></textarea>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+  </section>
+
+
+    <!-- END leave a review form -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
-      <ul id="reviews-list"></ul>
+      <ul id="reviews-list">
+        <li id="review-form">
+          <form onsubmit="sendOrSaveReview();">
+            <div class="review-title">
+              <p class="review-name">
+              <input name="name" id="form-review-name" class="" type="text" placeholder="Your enter your name" required>
+              </p>
+            </div>
+
+            <div class="review-content">
+              <div class="review-rating"><div class="review-stars">RATING:
+                <input class="form-element" name="rating" id="form-review-rating" type="number" min="1" max="5" value="5" required></div>
+              </div>
+              <div class="review-comments"><textarea name="comments" id="form-review-comment" required></textarea></div>
+              <input type="submit" value="Submit">
+            </div>
+          </form>
+          </li>
+
+      </ul>
     </section>
     <!-- End reviews -->
   </main>
@@ -78,6 +117,7 @@
   //	fetchCuisines();
   });
   </script>
+
   <!-- Google Maps -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4Y8lynieDgt4tKCFU33ThBHkT7a3TwtY&libraries=places&callback=initMap"></script>
   <!-- End scripts -->

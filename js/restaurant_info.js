@@ -4,26 +4,13 @@ var map;
 
 
 
+
 /**
- * Initialize Google map, called from HTML.
-
-window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
+ * Registering a Service Worker if supported.
+ */
+if ('serviceWorker' in navigator) {
+	var serviceWorkerRegistration = navigator.serviceWorker.register('sw.js');
 }
-*/
-
 /**
  * Get current restaurant from page URL.
  */
@@ -116,6 +103,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 		const noReviews = document.createElement('p');
 		noReviews.innerHTML = 'No reviews yet!';
 		container.appendChild(noReviews);
+		console.log(self.restaurant);
 		return;
 	}
 	const ul = document.getElementById('reviews-list');
@@ -137,7 +125,8 @@ createReviewHTML = (review) => {
 	name.innerHTML = review.name;
 	const date = document.createElement('p');
 	date.className = 'review-date';
-	date.innerHTML = review.date;
+	const formattedDate = new Date(review.createdAt);
+	date.innerHTML = formattedDate.getDate() + '/' + parseInt(formattedDate.getMonth()+1) +'/'+ formattedDate.getFullYear();
 	title.appendChild(name);
 	title.appendChild(date);
 	li.appendChild(title);
@@ -204,4 +193,64 @@ getParameterByName = (name, url) => {
 	if (!results[2])
 		return '';
 	return decodeURIComponent(results[2].replace(/\+/g, ' '));
+};
+
+/*fetch all reviews*/
+/**
+ * Create all reviews HTML and add them to the webpage.
+ */
+fillReviewsHTML = () => {
+
+	const container = document.getElementById('reviews-container');
+
+	DBHelper.fetchReviewsForARestaurant(self.restaurant.id, (error, reviews) => {
+		if (error) { // Got an error!
+			console.error(error);
+			const noReviews = document.createElement('p');
+			noReviews.innerHTML = 'No reviews yet!';
+			container.appendChild(noReviews);
+		} else {
+
+			const ul = document.getElementById('reviews-list');
+
+			let reviewsByDate = [];
+			console.log(reviews);
+			for (const review of reviews) {
+				reviewsByDate.push(review);
+			}
+			reviewsByDate.forEach(review => {
+				ul.appendChild(createReviewHTML(review));
+			});
+
+		}
+	});
+};
+
+sendOrSaveReview = () => {
+	console.log('Submit event fired');
+
+	event.preventDefault();
+	const  name = $('#form-review-name').val();
+	const  rating = $('#form-review-rating').val();
+	const  comments = $('#form-review-comment').val();
+	const  restaurant_id = parseInt(self.restaurant.id);
+	const reviewData = {restaurant_id, name, rating, comments};
+	DBHelper.postReview(reviewData, (hasFailed, review) => {
+		if (hasFailed) {
+			serviceWorkerRegistration
+				.then(registration => navigator.serviceWorker.ready)
+				.then(registration => {
+					registration.sync.register('offlineReviewAdded').then(() => {
+						console.log('Post review sync registered');
+					});
+					toastr.error('There is no internet connection, but your review is saved and will be synced as soon as there is an active connection...','Bummer!');
+				});
+		}
+		else {
+			$('#reviews-list').append(createReviewHTML(review));
+			toastr.success('Saving review...','Saving...');
+		}
+
+	});
+
 };
