@@ -30,8 +30,6 @@ enableServiceWorker = () =>{
 
 
 
-
-
 /**
  * Fetch all neighborhoods and set their HTML.
  */
@@ -105,7 +103,7 @@ window.initMap = () => {
 	// remove tabindex items
 
 
-	updateRestaurants();
+//	updateRestaurants();
 };
 
 
@@ -154,11 +152,17 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 	const ul = document.getElementById('restaurants-list');
 	restaurants.forEach(restaurant => {
 		ul.append(createRestaurantHTML(restaurant));
+		$('.lazy').Lazy({
+			afterLoad: function(element){console.log(element + ' loaded...');},
+			onError: function(element) {		console.log('error loading ' + element.data('src'));},
+			beforeLoad: function(element) {console.log(element + ' about to be loaded...')},
+			effect: 'fadeIn',
+			visibleOnly: true,
+		});
 	});
+
 	addMarkersToMap();
-	$('.lazy').Lazy({
-		onLoad: function(element){console.log(element.src + ' loaded...');}
-	});
+
 };
 
 /**
@@ -169,9 +173,9 @@ createRestaurantHTML = (restaurant) => {
 
 	const image = document.createElement('img');
 	image.className = 'restaurant-img lazy';
-	image.src = '/img/404.jpg';//DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
+	image.src = '/img/404.webp';//DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
 	image.setAttribute('alt',`Picture of the restaurant: ${restaurant.name}`);
-	image.setAttribute('data-src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg' );
+	image.setAttribute('data-src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.webp' );
 	li.append(image);
 
 	const name = document.createElement('h3');
@@ -183,7 +187,7 @@ createRestaurantHTML = (restaurant) => {
 	li.append(name);
 
 	const neighborhood = document.createElement('p');
-	neighborhood.innerHTML = '<i class="material-icons">place</i>' + restaurant.neighborhood;
+	neighborhood.innerHTML = restaurant.neighborhood;
 	li.append(neighborhood);
 
 	const address = document.createElement('p');

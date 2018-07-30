@@ -2,12 +2,11 @@
 <html lang="en">
 
 <head>
-  <!-- Normalize.css for better cross-browser consistency -->
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <!-- Main CSS file -->
-  <link rel="stylesheet" href="css/styles.css" type="text/css">
-  <link rel="stylesheet" href="css/toastr.css" type="text/css">
+
+
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#252525">
   <meta charset="UTF-8">
@@ -35,8 +34,9 @@
   <main id="maincontent">
     <!-- Beginning map -->
     <section id="map-container">
+
         <a class="skiplink" href="#filterbar">Skip map</a>
-      <div id="map" role="application"></div>
+      <div id="map" role="application"> <button class="maploader" onclick="addMap()">Click to load map</button></div>
     </section>
     <!-- End map -->
 
@@ -53,26 +53,10 @@
       <p id="restaurant-address"></p>
       <table id="restaurant-hours"></table>
     </section>
-    <!-- end restaurant -->
-    <!-- BEGIN leave a review form
-    <div class="">
-    <form onsubmit="sendOrSaveReview();">
-      <h3>Your Comment</h3>
-      <label for="restaurant_id">Id</label>
-      <input name="restaurant_id" id="restaurant_id" class="form-element review-title" type="text" required>
-      <label for="name">Name</label>
-      <input name="name" id="name" class="form-element review-title" type="text" required>
-      <label for="rating">Rating</label>
-      <input class="form-element" name="rating" id="rating" type="number" min="1" max="5" value="5" required>
-      <label for="comments">Comment</label>
-      <textarea name="comments" id="comments" required></textarea>
-      <input type="submit" value="Submit">
-    </form>
-  </div>
-  </section>
 
 
-    <!-- END leave a review form -->
+
+
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list">
@@ -80,16 +64,24 @@
           <form onsubmit="sendOrSaveReview();">
             <div class="review-title">
               <p class="review-name">
-              <input name="name" id="form-review-name" class="" type="text" placeholder="Your enter your name" required>
+                <label for="form-review-name">Name</label>
+              <input aria-label="Name of the reviewer" name="name" id="form-review-name" class="" type="text" placeholder="Your enter your name" required>
+              </p>
+              <p class="review-date">
+                Write a review here!
               </p>
             </div>
 
             <div class="review-content">
-              <div class="review-rating"><div class="review-stars">RATING:
-                <input class="form-element" name="rating" id="form-review-rating" type="number" min="1" max="5" value="5" required></div>
+              <div class="review-rating"><div class="review-stars">
+                <label for="form-review-rating">
+                RATING:
+                </label>
+                <input aria-label="Rating for the restaurant, 0 to 5 stars" class="form-element" name="rating" id="form-review-rating" type="number" min="1" max="5" value="5" required></div>
               </div>
-              <div class="review-comments"><textarea name="comments" id="form-review-comment" required></textarea></div>
-              <input type="submit" value="Submit">
+              <div class="review-comments"><label for="form-review-comment">Leave a comment</label><textarea  aria-label="Comments for the review" name="comments" id="form-review-comment" required></textarea></div>
+              <div id="form-review-submit">  <input type="submit" value="Submit review"></div>
+
             </div>
           </form>
           </li>
@@ -109,36 +101,51 @@
   <!-- Beginning scripts -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <!-- JS -->
+
   <script type="text/javascript" src="js/all.js"></script>
   <script>
+  let restaurantObj;
   document.addEventListener('DOMContentLoaded', (event) => {
-  	enableServiceWorker();
-  //	fetchNeighborhoods();
-  //	fetchCuisines();
+    enableServiceWorker();
+    fetchRestaurantFromURL((error,restaurant) => { restaurantObj = restaurant; fillBreadcrumb(); if (error) {console.log(error)}});
   });
   </script>
+  <noscript id="deferred-styles">
+
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+    <!-- <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100i" rel="stylesheet" > -->
+  </noscript>
+  <script>
+    var loadDeferredStyles = function() {
+      var addStylesNode = document.getElementById("deferred-styles");
+      var replacement = document.createElement("div");
+      replacement.innerHTML = addStylesNode.textContent;
+      document.body.appendChild(replacement)
+      addStylesNode.parentElement.removeChild(addStylesNode);
+    };
+    var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+    if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
+    else window.addEventListener('load', loadDeferredStyles);
+  </script>
+
+
 
   <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4Y8lynieDgt4tKCFU33ThBHkT7a3TwtY&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4Y8lynieDgt4tKCFU33ThBHkT7a3TwtY&libraries=places"></script>
   <!-- End scripts -->
   <script>
-  /**
-   * Initialize Google map, called from HTML.
-    */
-  window.initMap = () => {
-    fetchRestaurantFromURL((error, restaurant) => {
-      if (error) { // Got an error!
-        console.error(error);
-      } else {
-        self.map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 16,
-          center: restaurant.latlng,
-          scrollwheel: false
-        });
-        fillBreadcrumb();
-        DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-      }
-    });
+
+
+    function addMap() {
+      self.map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: restaurantObj.latlng,
+        scrollwheel: false
+      });
+
+      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
   }
 
   </script>

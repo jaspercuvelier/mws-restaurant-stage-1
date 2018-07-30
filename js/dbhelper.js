@@ -34,7 +34,7 @@ class DBHelper {
 			console.log('Opened DB...');
 			return store.getAll();
 		}).then(restaurants => {
-			console.log('found restaurants = '+ restaurants);
+		//	console.log('found restaurants = '+ restaurants);
 			if(restaurants && restaurants.length > 10){
 				console.log('Found restaurants in indexedDB and returning them...');
 				return callback(null, restaurants);
@@ -52,7 +52,7 @@ class DBHelper {
 							if(!db){return;}
 							const tx = db.transaction('restaurants','readwrite');
 							const store = tx.objectStore('restaurants');
-							console.log('restaurants die we ontvingen via fetch:' + restaurants);
+							//console.log('restaurants die we ontvingen via fetch:' + restaurants);
 							for (let restaurant of restaurants)
 							{
 								store.put(restaurant,restaurant.name);
@@ -190,10 +190,13 @@ class DBHelper {
    */
 	static imageUrlForRestaurant(restaurant) {
 		//returns only filename without the file extension...
-		//	  if (restaurant.photograph){
+			  if (restaurant.photograph){
 
 		return (`/img/${restaurant.photograph}`);
-
+		}
+		else {
+			return '/img/404.webp';
+		}
 	}
 
 	/**

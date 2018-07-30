@@ -14,7 +14,7 @@
 
 <body>
   <header>
-    <nav>
+    <nav style="width: 100%; background-color: #252831;">
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
   </header>
@@ -22,7 +22,7 @@
   <main id="maincontent">
     <section id="map-container">
       <a class="skiplink" href="#filterbar">Skip map</a>
-      <div id="map" role="application"> <button class="maploader" onclick="initMap()">Click to load map</button></div>
+      <div id="map" role="application"> <button class="maploader" onclick="initMap();updateRestaurants();">Click to load map</button></div>
     </section>
     <section>
       <div id="filterbar" class="filter-options">
@@ -50,12 +50,16 @@
   <script type="application/javascript" charset="utf-8" src="js/all.js"></script>
 
   <noscript id="deferred-styles">
-    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
-    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" >
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100i" rel="stylesheet" >
+
+      <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+
+
+   <!-- <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100i" rel="stylesheet" > -->
   </noscript>
   <script>
+
     var loadDeferredStyles = function() {
       var addStylesNode = document.getElementById("deferred-styles");
       var replacement = document.createElement("div");
@@ -67,6 +71,7 @@
         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
     if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
     else window.addEventListener('load', loadDeferredStyles);
+
   </script>
 
 

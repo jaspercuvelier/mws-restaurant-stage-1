@@ -37,7 +37,7 @@ class DBHelper {
 			console.log('Opened DB...');
 			return store.getAll();
 		}).then(restaurants => {
-			console.log('found restaurants = '+ restaurants);
+		//	console.log('found restaurants = '+ restaurants);
 			if(restaurants && restaurants.length > 10){
 				console.log('Found restaurants in indexedDB and returning them...');
 				return callback(null, restaurants);
@@ -55,7 +55,7 @@ class DBHelper {
 							if(!db){return;}
 							const tx = db.transaction('restaurants','readwrite');
 							const store = tx.objectStore('restaurants');
-							console.log('restaurants die we ontvingen via fetch:' + restaurants);
+							//console.log('restaurants die we ontvingen via fetch:' + restaurants);
 							for (let restaurant of restaurants)
 							{
 								store.put(restaurant,restaurant.name);
@@ -193,10 +193,13 @@ class DBHelper {
    */
 	static imageUrlForRestaurant(restaurant) {
 		//returns only filename without the file extension...
-		//	  if (restaurant.photograph){
+			  if (restaurant.photograph){
 
 		return (`/img/${restaurant.photograph}`);
-
+		}
+		else {
+			return '/img/404.webp';
+		}
 	}
 
 	/**
@@ -711,8 +714,6 @@ enableServiceWorker = () =>{
 
 
 
-
-
 /**
  * Fetch all neighborhoods and set their HTML.
  */
@@ -786,7 +787,7 @@ window.initMap = () => {
 	// remove tabindex items
 
 
-	updateRestaurants();
+//	updateRestaurants();
 };
 
 
@@ -835,11 +836,17 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 	const ul = document.getElementById('restaurants-list');
 	restaurants.forEach(restaurant => {
 		ul.append(createRestaurantHTML(restaurant));
+		$('.lazy').Lazy({
+			afterLoad: function(element){console.log(element + ' loaded...');},
+			onError: function(element) {		console.log('error loading ' + element.data('src'));},
+			beforeLoad: function(element) {console.log(element + ' about to be loaded...')},
+			effect: 'fadeIn',
+			visibleOnly: true,
+		});
 	});
+
 	addMarkersToMap();
-	$('.lazy').Lazy({
-		onLoad: function(element){console.log(element.src + ' loaded...');}
-	});
+
 };
 
 /**
@@ -850,9 +857,9 @@ createRestaurantHTML = (restaurant) => {
 
 	const image = document.createElement('img');
 	image.className = 'restaurant-img lazy';
-	image.src = '/img/404.jpg';//DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
+	image.src = '/img/404.webp';//DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg';
 	image.setAttribute('alt',`Picture of the restaurant: ${restaurant.name}`);
-	image.setAttribute('data-src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg' );
+	image.setAttribute('data-src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.webp' );
 	li.append(image);
 
 	const name = document.createElement('h3');
@@ -864,7 +871,7 @@ createRestaurantHTML = (restaurant) => {
 	li.append(name);
 
 	const neighborhood = document.createElement('p');
-	neighborhood.innerHTML = '<i class="material-icons">place</i>' + restaurant.neighborhood;
+	neighborhood.innerHTML = restaurant.neighborhood;
 	li.append(neighborhood);
 
 	const address = document.createElement('p');
@@ -935,19 +942,22 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	name.innerHTML = restaurant.name;
 
 	const address = document.getElementById('restaurant-address');
-	address.innerHTML = '<i class="material-icons">place</i>' + restaurant.address;
+	address.innerHTML =  restaurant.address;
 
 	const image = document.getElementById('restaurant-img');
-	image.className = 'restaurant-img';
+	image.className = 'restaurant-img lazy';
 	image.src = DBHelper.imageUrlForRestaurant(restaurant);
 	image.setAttribute('alt',`Picture of the restaurant: ${restaurant.name}`);
-	$('#restaurant-img-medium').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-medium.jpg');
-	$('#restaurant-img-large').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-large.jpg');
-	$('#restaurant-img-small').attr('src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg');
-
-	//const image_medium = document.getElementsByTagName[0]('source');
-	//image_medium.className = 'TESTKLAS'//setAttribute("srcset","TESTMAN.jpg");
-
+	$('#restaurant-img-medium').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-medium.webp');
+	$('#restaurant-img-large').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-large.webp');
+	$('#restaurant-img-small').attr('src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.webp');
+	$('.lazy').Lazy({
+		afterLoad: function(element){console.log(element + ' loaded...');},
+		onError: function(element) {		console.log('error loading ' + element.data('src'));},
+		beforeLoad: function(element) {console.log(element + ' about to be loaded...')},
+		effect: 'fadeIn',
+		visibleOnly: true,
+	});
 
 
 	const cuisine = document.getElementById('restaurant-cuisine');
@@ -1035,11 +1045,11 @@ createReviewHTML = (review) => {
 	let ratinghtml = 'RATING: ';
 	for (let i=0;i<review.rating;i++)
 	{
-		ratinghtml = ratinghtml + '<i class="material-icons smallicons">star</i>';
+		ratinghtml = ratinghtml + '★';
 	}
 	for (let i=0;i<(5-review.rating);i++)
 	{
-		ratinghtml = ratinghtml + '<i class="material-icons smallicons">star_border</i>';
+		ratinghtml = ratinghtml + '☆';
 	}
 
 
@@ -1105,7 +1115,7 @@ fillReviewsHTML = () => {
 			const ul = document.getElementById('reviews-list');
 
 			let reviewsByDate = [];
-			console.log(reviews);
+			//console.log(reviews);
 			for (const review of reviews) {
 				reviewsByDate.push(review);
 			}
@@ -1135,11 +1145,13 @@ sendOrSaveReview = () => {
 						console.log('Post review sync registered');
 					});
 					toastr.error('There is no internet connection, but your review is saved and will be synced as soon as there is an active connection...','Bummer!');
+					$('#reviews-list').append(createReviewHTML(review))
 				});
 		}
 		else {
 			$('#reviews-list').append(createReviewHTML(review));
 			toastr.success('Saving review...','Saving...');
+			$('#review-form').slideUp();
 		}
 
 	});

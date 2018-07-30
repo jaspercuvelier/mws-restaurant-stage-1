@@ -44,19 +44,22 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	name.innerHTML = restaurant.name;
 
 	const address = document.getElementById('restaurant-address');
-	address.innerHTML = '<i class="material-icons">place</i>' + restaurant.address;
+	address.innerHTML =  restaurant.address;
 
 	const image = document.getElementById('restaurant-img');
-	image.className = 'restaurant-img';
+	image.className = 'restaurant-img lazy';
 	image.src = DBHelper.imageUrlForRestaurant(restaurant);
 	image.setAttribute('alt',`Picture of the restaurant: ${restaurant.name}`);
-	$('#restaurant-img-medium').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-medium.jpg');
-	$('#restaurant-img-large').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-large.jpg');
-	$('#restaurant-img-small').attr('src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.jpg');
-
-	//const image_medium = document.getElementsByTagName[0]('source');
-	//image_medium.className = 'TESTKLAS'//setAttribute("srcset","TESTMAN.jpg");
-
+	$('#restaurant-img-medium').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-medium.webp');
+	$('#restaurant-img-large').attr('srcset',DBHelper.imageUrlForRestaurant(restaurant)+'-large.webp');
+	$('#restaurant-img-small').attr('src',DBHelper.imageUrlForRestaurant(restaurant)+'-small.webp');
+	$('.lazy').Lazy({
+		afterLoad: function(element){console.log(element + ' loaded...');},
+		onError: function(element) {		console.log('error loading ' + element.data('src'));},
+		beforeLoad: function(element) {console.log(element + ' about to be loaded...')},
+		effect: 'fadeIn',
+		visibleOnly: true,
+	});
 
 
 	const cuisine = document.getElementById('restaurant-cuisine');
@@ -144,11 +147,11 @@ createReviewHTML = (review) => {
 	let ratinghtml = 'RATING: ';
 	for (let i=0;i<review.rating;i++)
 	{
-		ratinghtml = ratinghtml + '<i class="material-icons smallicons">star</i>';
+		ratinghtml = ratinghtml + '★';
 	}
 	for (let i=0;i<(5-review.rating);i++)
 	{
-		ratinghtml = ratinghtml + '<i class="material-icons smallicons">star_border</i>';
+		ratinghtml = ratinghtml + '☆';
 	}
 
 
@@ -214,7 +217,7 @@ fillReviewsHTML = () => {
 			const ul = document.getElementById('reviews-list');
 
 			let reviewsByDate = [];
-			console.log(reviews);
+			//console.log(reviews);
 			for (const review of reviews) {
 				reviewsByDate.push(review);
 			}
@@ -244,11 +247,13 @@ sendOrSaveReview = () => {
 						console.log('Post review sync registered');
 					});
 					toastr.error('There is no internet connection, but your review is saved and will be synced as soon as there is an active connection...','Bummer!');
+					$('#reviews-list').append(createReviewHTML(review))
 				});
 		}
 		else {
 			$('#reviews-list').append(createReviewHTML(review));
 			toastr.success('Saving review...','Saving...');
+			$('#review-form').slideUp();
 		}
 
 	});

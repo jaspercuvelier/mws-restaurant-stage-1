@@ -5,8 +5,9 @@ var browserSync = require('browser-sync').create();
 var imagemin = require('gulp-imagemin');
 var concat = require('gulp-concat');
 var babel = require('gulp-babel');
-
-
+var gzip = require('gulp-gzip');
+var uglify = require('gulp-uglify-es');
+var pump = require('pump');
 
 gulp.task('default', ['styles','copy-html-sw','scripts'], function() {
 	gulp.watch('sass/**/*.scss', ['styles']);
@@ -49,6 +50,7 @@ gulp.task('copy-html-sw', function(){
 gulp.task('scripts',function(){
 	gulp.src('js/**/*.js')
 		.pipe(concat('all.js'))
+
 		.pipe(gulp.dest('dist/js'));
 });
 

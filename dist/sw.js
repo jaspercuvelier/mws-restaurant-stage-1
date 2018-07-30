@@ -322,7 +322,7 @@ function dbPromise() {
 	});
 }
 
-const staticCacheName = 'restrev-v24';
+const staticCacheName = 'restrev-v28';
 /* on install of the service worker, add items to cache */
 
 
@@ -335,10 +335,9 @@ self.addEventListener('install', function(event) {
 				'/index.html',
 				'/restaurant.html',
 				'/css/styles.css',
-				'/css/responsive.css',
 				'/js/all.js',
-				'/img/404.jpg',
-				'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'
+				'/img/404.webp',
+				'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js',
 			]);
 		})
 	);
@@ -378,7 +377,7 @@ self.addEventListener('fetch', function(event) {
 			return cache.match(event.request).then(function (response) {
 				return response || fetch(event.request).then(function(response) {
 					if(response.status === 404) {
-						return fetch('/img/404.jpg'); // <-- REPLACE THIS WITH 404-IMG
+						return fetch('/img/404.webp'); // <-- REPLACE THIS WITH 404-IMG
 					}
 					cache.put(event.request, response.clone());
 
@@ -401,7 +400,7 @@ self.addEventListener('sync', function (event) {
 				const store = tx.objectStore('offlineReviews');
 				return store.getAll();
 			}).then(reviews => {
-				console.log('these are ready to be synced: ' + JSON.stringify(reviews));
+				console.log('these are going to be synced: ' + JSON.stringify(reviews));
 				return postReviews(reviews);
 			}).catch(err => console.error(err))
 		);
@@ -409,7 +408,7 @@ self.addEventListener('sync', function (event) {
 });
 
 function postReviews (reviews) {
-	console.log('posting reviews: ' + reviews);
+//	console.log('posting reviews: ' + reviews);
 	return Promise.all(reviews.map(review => {
 		const {restaurant_id, name, rating, comments} = review;
 		return fetch('http://localhost:1337/reviews/', {
