@@ -41,7 +41,7 @@ fetchRestaurantFromURL = (callback) => {
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
 	const name = document.getElementById('restaurant-name');
-	name.innerHTML = restaurant.name;
+		name.innerHTML = restaurant.name +  '<div class="button-holder"></div>';
 
 	const address = document.getElementById('restaurant-address');
 	address.innerHTML =  restaurant.address;
@@ -56,7 +56,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	$('.lazy').Lazy({
 		afterLoad: function(element){console.log(element + ' loaded...');},
 		onError: function(element) {		console.log('error loading ' + element.data('src'));},
-		beforeLoad: function(element) {console.log(element + ' about to be loaded...')},
+		beforeLoad: function(element) {console.log(element + ' about to be loaded...');},
 		effect: 'fadeIn',
 		visibleOnly: true,
 	});
@@ -71,6 +71,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	}
 	// fill reviews
 	fillReviewsHTML();
+	console.log('self.restaurant.is_favorite is momenteel =' + self.restaurant.is_favorite)
+	$(".button-holder").html(createFavoriteButton());
 };
 
 /**
@@ -247,7 +249,7 @@ sendOrSaveReview = () => {
 						console.log('Post review sync registered');
 					});
 					toastr.error('There is no internet connection, but your review is saved and will be synced as soon as there is an active connection...','Bummer!');
-					$('#reviews-list').append(createReviewHTML(review))
+					$('#reviews-list').append(createReviewHTML(review));
 				});
 		}
 		else {
@@ -257,5 +259,62 @@ sendOrSaveReview = () => {
 		}
 
 	});
+
+};
+createFavoriteButton = () => {
+console.log("creating button v2...")
+
+const is_favorite = self.restaurant.is_favorite;
+	console.log("is_favorite is "+ is_favorite.toString())
+	if (is_favorite.toString() == 'true')
+	{
+		console.log("true signaled!")
+		var  onMouseOver = '💔';
+		var currentState = '❤️';
+	}
+	else
+	{
+		console.log("false signaled!")
+		var onMouseOver = '💖';
+		var currentState = '🖤';
+	}
+	let el = document.createElement('button');
+	$(el).html(currentState);
+	$(el).attr('id','buttonFavorite');
+	$(el).attr('role','switch');
+	$(el).attr('aria-checked',is_favorite.toString());
+	$(el).attr('aria-label', is_favorite.toString() === 'true' ? 'Un-favorite this restaurant' : 'Favorite this restaurant');
+	$(el).hover(function(){$(el).html(onMouseOver);},function(){$(el).html(currentState);});
+	$(el).click(function(){
+		console.log("clicked!");
+		DBHelper.toggleFavorite(restaurant = self.restaurant,(hasFailed) => {
+			if (hasFailed) {
+		 serviceWorkerRegistration
+			 .then(registration => navigator.serviceWorker.ready)
+			 .then(registration => { // register sync
+				 registration.sync.register(`favoriteToggled?${restaurant.id}&${restaurant.is_favorite}`).then(() => {
+					 console.log('Toggle favorite sync registered');
+				 });
+			 });
+
+		}
+		toggleThisRestaurantFavorite();
+	});
+		restaurant.is_favorite = (!is_favorite).toString();
+
+
+
+	});
+	//$('.button-holder').html($(el));
+	return $(el);
+//});
+
+}
+
+toggleThisRestaurantFavorite = () => {
+	$('.button-holder').html(createFavoriteButton());
+
+	//fetchRestaurantFromURL((error,restaurant) => { restaurantObj = restaurant; fillBreadcrumb(); if (error) {console.log(error);}});
+
 
 };

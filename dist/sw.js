@@ -316,13 +316,13 @@
 function dbPromise() {
 	console.log('idb opened from serviceWorker');
 	return idb.open('restrev',1,function(upgradeDb){
-		upgradeDb.createObjectStore('restaurants');
+		upgradeDb.createObjectStore('restaurants').createIndex('is_favorite', 'is_favorite');
 		upgradeDb.createObjectStore('allReviews', {keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
 		upgradeDb.createObjectStore('offlineReviews', {autoIncrement:true, keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
 	});
 }
 
-const staticCacheName = 'restrev-v28';
+const staticCacheName = 'restrev-v41';
 /* on install of the service worker, add items to cache */
 
 
@@ -375,10 +375,12 @@ self.addEventListener('fetch', function(event) {
 	event.respondWith(
 		caches.open(staticCacheName).then(function(cache) {
 			return cache.match(event.request).then(function (response) {
+
 				return response || fetch(event.request).then(function(response) {
 					if(response.status === 404) {
 						return fetch('/img/404.webp'); // <-- REPLACE THIS WITH 404-IMG
 					}
+					if (event.request.method === "PUT" || event.request.method === "POST" ) {return response;}
 					cache.put(event.request, response.clone());
 
 					return response;
@@ -405,6 +407,16 @@ self.addEventListener('sync', function (event) {
 			}).catch(err => console.error(err))
 		);
 	}
+	if (event.tag.startsWith('favoriteToggled')) {
+	const dataString = event.tag.substring(16);
+	let [restaurant_id, is_favorite] = dataString.split('&');
+
+	event.waitUntil(
+		toggleFavorite(restaurant_id, is_favorite)
+			.catch(err => console.error(err))
+	);
+}
+
 });
 
 function postReviews (reviews) {
@@ -441,4 +453,14 @@ function postReviews (reviews) {
 			} else console.log('Looks like there was a problem syncing. Status Code: ' + response.status);
 		});
 	}));
+}
+
+function toggleFavorite (restaurant_id, is_favorite) {
+	console.log(restaurant_id, is_favorite);
+  return fetch(`http://localhost:1337/restaurants/${restaurant_id}/?is_favorite=${is_favorite}`, {method: 'PUT'})
+    .then(response => {
+      if (response.status === 200) {
+        console.log('Put synced toggle favorite successfully ', response);
+      } else console.log('Looks like there was a problem. Status Code: ' + response.status + " "+ JSON.stringify(response));
+    })
 };

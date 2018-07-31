@@ -17,7 +17,7 @@ class DBHelper {
 
 	static dbPromise(){
 		return idb.open('restrev',1,function(upgradeDb){
-			upgradeDb.createObjectStore('restaurants');
+			upgradeDb.createObjectStore('restaurants').createIndex('is_favorite', 'is_favorite');
 			upgradeDb.createObjectStore('allReviews', {keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
 			upgradeDb.createObjectStore('offlineReviews', {autoIncrement:true, keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
 		});
@@ -68,10 +68,50 @@ class DBHelper {
 		});
 	}
 
+	/**
+	   * Toggle favorite for a restaurant.
+	   */
+	  static toggleFavorite(restaurant, callback) {
 
+		const nextState = !restaurant.is_favorite;
 
+		console.log('currentState= '+restaurant.is_favorite+' nextState = ' + nextState);
 
+	    fetch(`${DBHelper.DATABASE_URL}restaurants/${restaurant.id}/?is_favorite=${nextState}`, {method: 'PUT'})
+	      .then(response => {
+				console.log(response);
+	      if (response.status !== 200) {
+	        const error = 'Looks like there was a problem. Status Code: ' + response.status;
+	        console.log(error);
+	      }
+				restaurant.is_favorite = nextState;
+	      response.json().then(function(restaurant) {
+	        DBHelper.updateRestaurant(restaurant);
 
+	        return callback(false);
+
+	      });
+	    }).catch(function(err) {
+	      console.log('Fetch Error :-S', err);
+
+	      DBHelper.updateRestaurant(restaurant);
+	      return callback(true);
+	    });
+	  }
+	/**
+	   * Update restaurant locally.
+	   */
+	  static updateRestaurant(restaurant) {
+	    DBHelper.dbPromise().then(function(db) {
+	      if (!db) return;
+
+	      const tx = db.transaction('restaurants', 'readwrite');
+	      const store = tx.objectStore('restaurants');
+
+	      store.put(restaurant,restaurant.name);
+	    });
+		return restaurant;
+	  }
 	/**
    * Fetch a restaurant by its ID.
    */
@@ -195,7 +235,7 @@ class DBHelper {
 		//returns only filename without the file extension...
 			  if (restaurant.photograph){
 
-		return (`/img/${restaurant.photograph}`);
+			return (`/img/${restaurant.photograph}`);
 		}
 		else {
 			return '/img/404.webp';
@@ -810,6 +850,7 @@ updateRestaurants = () => {
 		} else {
 			resetRestaurants(restaurants);
 			fillRestaurantsHTML();
+
 		}
 	});
 };
@@ -853,6 +894,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
+	console.log(JSON.stringify(restaurant))
 	const li = document.createElement('li');
 
 	const image = document.createElement('img');
@@ -939,7 +981,7 @@ fetchRestaurantFromURL = (callback) => {
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
 	const name = document.getElementById('restaurant-name');
-	name.innerHTML = restaurant.name;
+		name.innerHTML = restaurant.name +  '<div class="button-holder"></div>';
 
 	const address = document.getElementById('restaurant-address');
 	address.innerHTML =  restaurant.address;
@@ -954,7 +996,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	$('.lazy').Lazy({
 		afterLoad: function(element){console.log(element + ' loaded...');},
 		onError: function(element) {		console.log('error loading ' + element.data('src'));},
-		beforeLoad: function(element) {console.log(element + ' about to be loaded...')},
+		beforeLoad: function(element) {console.log(element + ' about to be loaded...');},
 		effect: 'fadeIn',
 		visibleOnly: true,
 	});
@@ -969,6 +1011,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	}
 	// fill reviews
 	fillReviewsHTML();
+	console.log('self.restaurant.is_favorite is momenteel =' + self.restaurant.is_favorite)
+	$(".button-holder").html(createFavoriteButton());
 };
 
 /**
@@ -1145,7 +1189,7 @@ sendOrSaveReview = () => {
 						console.log('Post review sync registered');
 					});
 					toastr.error('There is no internet connection, but your review is saved and will be synced as soon as there is an active connection...','Bummer!');
-					$('#reviews-list').append(createReviewHTML(review))
+					$('#reviews-list').append(createReviewHTML(review));
 				});
 		}
 		else {
@@ -1155,5 +1199,62 @@ sendOrSaveReview = () => {
 		}
 
 	});
+
+};
+createFavoriteButton = () => {
+console.log("creating button v2...")
+
+const is_favorite = self.restaurant.is_favorite;
+	console.log("is_favorite is "+ is_favorite.toString())
+	if (is_favorite.toString() == 'true')
+	{
+		console.log("true signaled!")
+		var  onMouseOver = '💔';
+		var currentState = '❤️';
+	}
+	else
+	{
+		console.log("false signaled!")
+		var onMouseOver = '💖';
+		var currentState = '🖤';
+	}
+	let el = document.createElement('button');
+	$(el).html(currentState);
+	$(el).attr('id','buttonFavorite');
+	$(el).attr('role','switch');
+	$(el).attr('aria-checked',is_favorite.toString());
+	$(el).attr('aria-label', is_favorite.toString() === 'true' ? 'Un-favorite this restaurant' : 'Favorite this restaurant');
+	$(el).hover(function(){$(el).html(onMouseOver);},function(){$(el).html(currentState);});
+	$(el).click(function(){
+		console.log("clicked!");
+		DBHelper.toggleFavorite(restaurant = self.restaurant,(hasFailed) => {
+			if (hasFailed) {
+		 serviceWorkerRegistration
+			 .then(registration => navigator.serviceWorker.ready)
+			 .then(registration => { // register sync
+				 registration.sync.register(`favoriteToggled?${restaurant.id}&${restaurant.is_favorite}`).then(() => {
+					 console.log('Toggle favorite sync registered');
+				 });
+			 });
+
+		}
+		toggleThisRestaurantFavorite();
+	});
+		restaurant.is_favorite = (!is_favorite).toString();
+
+
+
+	});
+	//$('.button-holder').html($(el));
+	return $(el);
+//});
+
+}
+
+toggleThisRestaurantFavorite = () => {
+	$('.button-holder').html(createFavoriteButton());
+
+	//fetchRestaurantFromURL((error,restaurant) => { restaurantObj = restaurant; fillBreadcrumb(); if (error) {console.log(error);}});
+
 
 };

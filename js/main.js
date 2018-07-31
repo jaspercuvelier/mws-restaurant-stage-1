@@ -126,6 +126,7 @@ updateRestaurants = () => {
 		} else {
 			resetRestaurants(restaurants);
 			fillRestaurantsHTML();
+
 		}
 	});
 };
@@ -169,6 +170,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
+	console.log(JSON.stringify(restaurant))
 	const li = document.createElement('li');
 
 	const image = document.createElement('img');

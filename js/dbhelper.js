@@ -14,7 +14,7 @@ class DBHelper {
 
 	static dbPromise(){
 		return idb.open('restrev',1,function(upgradeDb){
-			upgradeDb.createObjectStore('restaurants');
+			upgradeDb.createObjectStore('restaurants').createIndex('is_favorite', 'is_favorite');
 			upgradeDb.createObjectStore('allReviews', {keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
 			upgradeDb.createObjectStore('offlineReviews', {autoIncrement:true, keyPath:'id'}).createIndex('restaurant_id','restaurant_id');
 		});
@@ -65,10 +65,50 @@ class DBHelper {
 		});
 	}
 
+	/**
+	   * Toggle favorite for a restaurant.
+	   */
+	  static toggleFavorite(restaurant, callback) {
 
+		const nextState = !restaurant.is_favorite;
 
+		console.log('currentState= '+restaurant.is_favorite+' nextState = ' + nextState);
 
+	    fetch(`${DBHelper.DATABASE_URL}restaurants/${restaurant.id}/?is_favorite=${nextState}`, {method: 'PUT'})
+	      .then(response => {
+				console.log(response);
+	      if (response.status !== 200) {
+	        const error = 'Looks like there was a problem. Status Code: ' + response.status;
+	        console.log(error);
+	      }
+				restaurant.is_favorite = nextState;
+	      response.json().then(function(restaurant) {
+	        DBHelper.updateRestaurant(restaurant);
 
+	        return callback(false);
+
+	      });
+	    }).catch(function(err) {
+	      console.log('Fetch Error :-S', err);
+
+	      DBHelper.updateRestaurant(restaurant);
+	      return callback(true);
+	    });
+	  }
+	/**
+	   * Update restaurant locally.
+	   */
+	  static updateRestaurant(restaurant) {
+	    DBHelper.dbPromise().then(function(db) {
+	      if (!db) return;
+
+	      const tx = db.transaction('restaurants', 'readwrite');
+	      const store = tx.objectStore('restaurants');
+
+	      store.put(restaurant,restaurant.name);
+	    });
+		return restaurant;
+	  }
 	/**
    * Fetch a restaurant by its ID.
    */
@@ -192,7 +232,7 @@ class DBHelper {
 		//returns only filename without the file extension...
 			  if (restaurant.photograph){
 
-		return (`/img/${restaurant.photograph}`);
+			return (`/img/${restaurant.photograph}`);
 		}
 		else {
 			return '/img/404.webp';

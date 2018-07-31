@@ -540,6 +540,13 @@ object-fit: cover;
   order:100;
 }
 
+#buttonFavorite {
+  background-color: white;
+    font-size: 30px;
+    border: 0;
+    /* padding: 5px; */
+    margin: 5px;
+}
 
 /* IF screen width is 500px */
 @media screen and (min-width:500px)
