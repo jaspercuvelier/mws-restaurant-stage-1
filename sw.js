@@ -460,7 +460,7 @@ function toggleFavorite (restaurant_id, is_favorite) {
   return fetch(`http://localhost:1337/restaurants/${restaurant_id}/?is_favorite=${is_favorite}`, {method: 'PUT'})
     .then(response => {
       if (response.status === 200) {
-        console.log('Put synced toggle favorite successfully ', response);
-      } else console.log('Looks like there was a problem. Status Code: ' + response.status + " "+ JSON.stringify(response));
+        console.log('Alles netjes gesynct ', response);
+      } else console.log('probleem om favoriting te synchen... ' + response.status + " "+ JSON.stringify(response));
     })
 };

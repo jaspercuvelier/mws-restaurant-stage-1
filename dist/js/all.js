@@ -81,7 +81,7 @@ class DBHelper {
 	      .then(response => {
 				console.log(response);
 	      if (response.status !== 200) {
-	        const error = 'Looks like there was a problem. Status Code: ' + response.status;
+	        const error = 'probleem bij het plaatsen van een favoriet!  ' + response.status;
 	        console.log(error);
 	      }
 				restaurant.is_favorite = nextState;
@@ -92,7 +92,7 @@ class DBHelper {
 
 	      });
 	    }).catch(function(err) {
-	      console.log('Fetch Error :-S', err);
+	      console.log('Fetch Error while favoriting...', err);
 
 	      DBHelper.updateRestaurant(restaurant);
 	      return callback(true);
